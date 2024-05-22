@@ -16,6 +16,14 @@ public class TreeNode<E> implements TreePosition<E> {
 
 	private PositionList<Position<E>> children; // Nodos filhos
 
+	public int val;
+
+	@SuppressWarnings("rawtypes")
+	public TreeNode left;
+
+	@SuppressWarnings("rawtypes")
+	public TreeNode right;
+
 // Construtor padrão
 
 	public TreeNode() {

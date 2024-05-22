@@ -2,6 +2,8 @@ package source;
 
 import java.util.Iterator;
 
+import org.w3c.dom.Node;
+
 import position.Position;
 import tadexception.BoundaryViolationException;
 import tadexception.InvalidPositionException;
@@ -66,7 +68,8 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 	}
 
 	// Retorna o pai de um nodo.
-	public Position<E> parent(Position<E> v, TreePosition<E> e) throws InvalidPositionException, BoundaryViolationException {
+	public Position<E> parent(Position<E> v, TreePosition<E> e)
+			throws InvalidPositionException, BoundaryViolationException {
 
 		BTPosition<E> vv = checkPosition(v);
 		Position<E> parentPos = (Position<E>) vv.getParent();
@@ -384,4 +387,79 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public TreeNode makerBTSearch(TreeNode root, int target) {
+		if (root == null || root.val == target) {
+			return root;
+		}
+
+		// Percorre a árvore usando o caminhamento inorder
+		if (target < root.val) {
+			return makerBTSearch(root.left, target);
+		} else {
+			return makerBTSearch(root.right, target);
+		}
+	}
+
+	public void eulerTour(@SuppressWarnings("rawtypes") TreeNode root) {
+		if (root == null) {
+			return;
+		}
+
+		// Visita o nó antes de percorrer a subárvore esquerda
+		System.out.println("Visiting node: " + root.val);
+
+		// Percorre a subárvore esquerda
+		eulerTour(root.left);
+
+		// Volta ao nó atual
+		System.out.println("Returning to node: " + root.val);
+
+		// Percorre a subárvore direita
+		eulerTour(root.right);
+
+		// Visita o nó novamente após percorrer as subárvores
+		System.out.println("Visiting node again: " + root.val);
+	}
+
+	public static void printExpression(LinkedBinaryTree<String> tree, Position<String> v)
+			throws InvalidPositionException, BoundaryViolationException {
+		if (tree.isInternal(v)) {
+			System.out.print("(");
+		}
+
+		if (tree.hasLeft(v)) {
+			printExpression(tree, tree.left(v));
+		}
+
+		System.out.print(v.element());
+
+		if (tree.hasRight(v)) {
+			printExpression(tree, tree.right(v));
+		}
+
+		if (tree.isInternal(v)) {
+			System.out.print(")");
+		}
+	}
+
+	// Método para contar os nodos esquerdos e externos de uma árvore binária
+	public static int countLeftExternalNodes(BTPosition<Node> node) {
+		if (node == null) {
+			return 0; // Nodo externo
+		}
+		// Conta recursivamente nos nodos esquerdos e adiciona os nodos externos
+		// direitos
+		return countLeftExternalNodes(node.getLeft()) + (node.getRight() == null ? 1 : 0);
+	}
+
+	// Método para contar os nodos direitos e externos de uma árvore binária
+	public static int countRightExternalNodes(BTPosition<Node> node) {
+		if (node == null) {
+			return 0; // Nodo externo
+		}
+		// Conta recursivamente nos nodos direitos e adiciona os nodos externos
+		// esquerdos
+		return countRightExternalNodes(node.getRight()) + (node.getLeft() == null ? 1 : 0);
+	}
 }
